@@ -5,7 +5,7 @@ import "./globals.css";
 const anton = Anton({ subsets: ["latin"], weight: "400", variable: "--font-anton", display: "swap" });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://milesformacenergy.vercel.app"),
+  metadataBase: new URL("https://miles-for-mac-energy.vercel.app"),
   icons: { icon: "/favicon.svg" },
   title: {
     default: "Miles Mattina for MAC Energy",

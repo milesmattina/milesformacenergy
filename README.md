@@ -18,6 +18,10 @@ The custom satin-silver can has a hinged pull tab, a sliding resealable lid and 
 
 Portfolio images and posters remain pre-optimized and eager; videos download on visibility and play muted, inline, looping, without controls or picture-in-picture. The website-build timelapse remains absent.
 
+Production: https://miles-for-mac-energy.vercel.app
+
+Repository: https://github.com/milesmattina/milesformacenergy
+
 ## Infrastructure
 
 Standalone Next.js project. No Supabase client, project, database, storage bucket, credentials, environment variables, API calls or visitor tracking are configured. The unused inherited SQL migration was removed from this copy. No existing backend was changed.
