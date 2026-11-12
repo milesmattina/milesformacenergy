@@ -735,7 +735,7 @@ export default function Home() {
             href="#top"
           >
             <span>Miles Mattina</span><span className="nav-slash" aria-hidden="true">/</span>
-            <Image className="nav-brand" src="/brand/mac-logo.png" alt="MAC Energy" width={100} height={33} unoptimized priority />
+            <Image className="nav-brand" src="/brand/mac-logo.png" alt="MAC Energy" width={300} height={67} unoptimized priority />
           </a>
           <div className="flex flex-wrap justify-end gap-2">
             {navItems.map(([label, href]) => (
