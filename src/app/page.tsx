@@ -146,7 +146,7 @@ const whyCards: WhyCard[] = [
     note: "So I brought the work. And the receipts.",
   },
   {
-    title: "I PUT MY RESUME IN A VITAMIN BOTTLE.",
+    title: "I PUT MY RESUME IN AN ENERGY CAN.",
     note: "Apparently, I take brand consistency pretty seriously.",
   },
   {
@@ -341,116 +341,100 @@ function createCanArrowGeometry(
 
 function colorClasses(color: FieldNote["color"]) {
   if (color === "red") {
-    return "bg-[var(--ritual-yellow)] text-[var(--ritual-navy)] shadow-[10px_10px_0_var(--ritual-navy)]";
+    return "bg-[var(--mac-orange)] text-[var(--mac-black)] shadow-[10px_10px_0_var(--mac-black)]";
   }
 
   if (color === "gold") {
-    return "bg-[var(--ritual-yellow)] text-[var(--ink)] shadow-[10px_10px_0_var(--ritual-accent)]";
+    return "bg-[var(--mac-orange)] text-[var(--ink)] shadow-[10px_10px_0_var(--mac-accent)]";
   }
 
-  return "bg-[var(--ritual-navy)] text-white shadow-[10px_10px_0_var(--ritual-accent)]";
+  return "bg-[var(--mac-black)] text-white shadow-[10px_10px_0_var(--mac-accent)]";
 }
 
-type ResumeBottleProps = {
+type ResumeCanProps = {
   isResumeActive: boolean;
   isPrompting: boolean;
   openResume: () => void;
   resumeMode: ResumeMode;
-  onCapMotionEnd: () => void;
+  onCanMotionEnd: () => void;
 };
 
-function ResumeBottle({
-  isResumeActive,
-  isPrompting,
-  openResume,
-  resumeMode,
-  onCapMotionEnd,
-}: ResumeBottleProps) {
+function ResumeCan({ isResumeActive, isPrompting, openResume, resumeMode, onCanMotionEnd }: ResumeCanProps) {
+  const moving = resumeMode === "opening" || resumeMode === "closing";
   return (
     <button
+      aria-label="Open Miles Mattina resume can"
       aria-expanded={isResumeActive}
-      aria-label="Open Miles Mattina resume bottle"
-      disabled={resumeMode === "opening" || resumeMode === "closing"}
-      className={`resume-bottle ${
-        resumeMode === "opening" ? "resume-bottle--opening" : resumeMode === "closing" ? "resume-bottle--closing" : ""
-      } ${isPrompting && !isResumeActive ? "resume-bottle--prompt" : ""} ${
-        isResumeActive && resumeMode !== "opening" ? "resume-bottle--open" : ""
-      }`}
+      aria-controls="resume-viewer"
+      aria-busy={moving}
+      data-state={resumeMode}
+      className={`resume-can ${moving ? `resume-can--${resumeMode}` : ""} ${isPrompting && !isResumeActive ? "resume-can--prompt" : ""} ${isResumeActive && resumeMode !== "opening" ? "resume-can--open" : ""}`}
+      disabled={moving}
       onClick={openResume}
       type="button"
     >
-      <svg className="resume-bottle__art" viewBox="0 0 320 520" aria-hidden="true">
+      <svg className="resume-can__art" viewBox="0 0 320 540" aria-hidden="true">
         <defs>
-          <linearGradient id="glass" x1="0" x2="1">
-            <stop offset="0" stopColor="#ad8c32" stopOpacity=".38" />
-            <stop offset=".09" stopColor="#fff" stopOpacity=".72" />
-            <stop offset=".22" stopColor="#fff5b6" stopOpacity=".16" />
-            <stop offset=".7" stopColor="#fff" stopOpacity=".12" />
-            <stop offset=".94" stopColor="#ad8c32" stopOpacity=".35" />
-            <stop offset="1" stopColor="#fff" stopOpacity=".6" />
+          <linearGradient id="can-metal" x1="0" x2="1">
+            <stop stopColor="#626b6c"/><stop offset=".13" stopColor="#eff1ed"/><stop offset=".28" stopColor="#939b99"/><stop offset=".46" stopColor="#f7faf3"/><stop offset=".7" stopColor="#7c8582"/><stop offset=".87" stopColor="#d8ded6"/><stop offset="1" stopColor="#555e58"/>
           </linearGradient>
-          <linearGradient id="cap" x1="0" x2="1">
-            <stop stopColor="#dadbd6" /><stop offset=".22" stopColor="#fff" />
-            <stop offset=".7" stopColor="#f8f8f2" /><stop offset="1" stopColor="#d2d4d0" />
+          <linearGradient id="can-black" x1="0" x2="1">
+            <stop stopColor="#888b8c"/><stop offset=".13" stopColor="#e9eae8"/><stop offset=".3" stopColor="#fafbf8"/><stop offset=".54" stopColor="#dadcd9"/><stop offset=".8" stopColor="#b8bcba"/><stop offset=".96" stopColor="#eeefec"/><stop offset="1" stopColor="#929695"/>
           </linearGradient>
-          <linearGradient id="capsule" x1="0" y1="0" x2=".5" y2="1">
-            <stop stopColor="#fff4a3" /><stop offset=".42" stopColor="#e5bb42" stopOpacity=".82" />
-            <stop offset="1" stopColor="#9e711c" stopOpacity=".88" />
+          <linearGradient id="can-lid" x1="0" y1="0" x2="0" y2="1">
+            <stop stopColor="#e3e5e4"/><stop offset=".45" stopColor="#858a89"/><stop offset="1" stopColor="#dce0de"/>
           </linearGradient>
-          <pattern id="beadlets" width="7" height="7" patternUnits="userSpaceOnUse">
-            <circle cx="3" cy="3" r="1.5" fill="#fff7cb" opacity=".9" />
-          </pattern>
-          <clipPath id="cap-ribs-clip"><rect x="94" y="65" width="132" height="30" rx="3" /></clipPath>
-          <clipPath id="bottle-clip"><path d="M79 140Q79 119 99 113L99 82H221V113Q241 119 241 140V441Q241 466 217 469H103Q79 466 79 441Z" /></clipPath>
+          <linearGradient id="can-glint" x1="0" x2="1">
+            <stop stopColor="#fff" stopOpacity="0"/><stop offset=".45" stopColor="#fff" stopOpacity=".17"/><stop offset="1" stopColor="#fff" stopOpacity="0"/>
+          </linearGradient>
+          <clipPath id="can-opening"><ellipse cx="160" cy="89" rx="43" ry="16"/></clipPath>
         </defs>
-        <ellipse cx="164" cy="482" rx="102" ry="13" fill="#66550f" opacity=".12" />
-        <path d="M79 140Q79 119 99 113L99 82H221V113Q241 119 241 140V441Q241 466 217 469H103Q79 466 79 441Z" fill="url(#glass)" stroke="#bba862" strokeOpacity=".5" strokeWidth="2" />
-        <g clipPath="url(#bottle-clip)">
-          {Array.from({ length: 32 }, (_, i) => {
-            const x = 88 + ((i * 43) % 118);
-            const y = 291 + ((i * 31) % 149);
-            const angle = ((i * 47) % 160) - 80;
-            return <g key={i} transform={`translate(${x} ${y}) rotate(${angle} 23 10)`} opacity={i < 14 ? .55 : .86}>
-              <rect width="48" height="21" rx="10.5" fill="url(#capsule)" stroke="#b58c34" strokeWidth=".8" />
-              <rect x="2" y="2" width="25" height="17" rx="8" fill="url(#beadlets)" />
-              <path d="M24 1V20M8 4H34" fill="none" stroke="#fff" strokeOpacity=".55" />
-            </g>;
-          })}
-          <path d="M91 149V433Q91 449 108 451" fill="none" stroke="white" strokeOpacity=".75" strokeWidth="5" />
-          <path d="M231 153V437" fill="none" stroke="white" strokeOpacity=".36" strokeWidth="3" />
+        <ellipse cx="165" cy="510" rx="116" ry="14" fill="#000" opacity=".5"/>
+        <path d="M66 86Q56 112 51 128V465Q51 489 74 494H246Q269 489 269 465V128Q264 108 254 86Z" fill="url(#can-metal)"/>
+        <path d="M65 105Q57 124 57 140V463Q57 478 76 482H244Q263 478 263 463V140Q263 124 255 105Z" fill="url(#can-black)" stroke="#41483c"/>
+        <path d="M73 123V460" stroke="#d3dcc9" strokeOpacity=".18" strokeWidth="3"/>
+        <path d="M245 125V460" stroke="#000" strokeWidth="7" opacity=".5"/>
+        <path d="M62 469Q160 494 258 469V480Q160 506 62 480Z" fill="url(#can-metal)"/>
+        <path d="M65 483Q160 506 255 483" fill="none" stroke="#eef3eb" strokeOpacity=".8" strokeWidth="2"/>
+        <text x="160" y="143" fill="#292929" fontSize="8.5" letterSpacing="2.1" textAnchor="middle">INDEPENDENT APPLICATION</text>
+        <g transform="translate(82 389) rotate(-90)">
+          <image href="/brand/mac-logo.png" width="230" height="93" style={{filter: "brightness(0)"}} />
         </g>
-        <ellipse cx="160" cy="459" rx="73" ry="8" fill="#ac8834" opacity=".15" />
-        <g className="resume-bottle__label" fill="#142b6f" textAnchor="middle">
-          <circle cx="160" cy="176" r="24" />
-          <path d="M136 211H184" stroke="#142b6f" strokeWidth="3" />
-          <text x="160" y="242" fontSize="23" fontWeight="600" letterSpacing="-1">Miles Mattina</text>
-          <text x="160" y="265" fontSize="18" fontWeight="500">Resume</text>
-          <text x="160" y="286" fontSize="7.5" letterSpacing="1.4">THE ESSENTIALS</text>
+        <path d="M199 161H246V390H199Z" fill="#f26403" />
+        <g transform="translate(212 177) rotate(90)" className="resume-can__label">
+          <text fill="#171717" fontSize="28" letterSpacing="1.5">MILES MATTINA</text>
         </g>
-        <g className="resume-bottle__neck" fill="none" stroke="#bba862" strokeOpacity=".65">
-          <ellipse cx="160" cy="83" rx="60" ry="6" fill="#b5a35922" strokeWidth="2" />
-          <path d="M101 90Q160 98 219 90M101 98Q160 106 219 98M101 106Q160 114 219 106" strokeWidth="2" />
+        <g className="resume-can__label" textAnchor="middle">
+          <text x="160" y="428" fill="#191919" fontSize="38" letterSpacing="2">RESUME</text>
+          <path d="M84 439H236" stroke="#333" strokeWidth="1" />
+          <text x="160" y="457" fill="#242424" fontFamily="Arial, sans-serif" fontSize="9" letterSpacing="1.6">BRAND MANAGER / MAC ENERGY</text>
         </g>
-        <g className="resume-bottle__cap" onAnimationEnd={(event) => {
-          if (event.target === event.currentTarget) onCapMotionEnd();
-        }}>
-          <rect x="91" y="56" width="138" height="47" rx="8" fill="url(#cap)" stroke="#d2d3cb" />
-          <g clipPath="url(#cap-ribs-clip)">
-            <g className="resume-bottle__cap-ribs">
-              {Array.from({length: 48}, (_, i) => <path key={i} d={`M${61 + i * 4.2} 65V94`} stroke="#9ba393" strokeOpacity={i % 6 === 0 ? .65 : .3} />)}
-            </g>
-          </g>
-          <ellipse cx="160" cy="58" rx="68" ry="7" fill="#fffef7" stroke="#d2d3cb" strokeWidth=".6" />
-          <g transform="translate(160 58) scale(1 .105)">
-            <g className="resume-bottle__cap-turn">
-              <path d="M-38-32A50 50 0 0 1 47 17" fill="none" stroke="#b1b7a9" strokeWidth="5" />
-              <circle cx="-44" cy="20" r="7" fill="#a3aa98" />
-            </g>
-          </g>
-          <path d="M97 99H223" stroke="#c5c6bd" strokeWidth="2" />
+        {Array.from({length: 20}, (_, i) => <g key={i} transform={`translate(${69 + (i * 43) % 181} ${155 + (i * 67) % 242})`}>
+          <ellipse rx={1.6 + i % 3} ry={2.3 + i % 3} fill="#fff" fillOpacity=".15" stroke="#fff" strokeOpacity=".6" strokeWidth=".7" />
+          <path d="M-1 1L1 2" stroke="#323232" strokeOpacity=".35" strokeWidth=".8" />
+        </g>)}
+        <path d="M78 131H113V470H78Z" fill="url(#can-glint)"/>
+        <ellipse cx="160" cy="88" rx="98" ry="30" fill="url(#can-metal)" stroke="#b9bfbc" strokeWidth="2"/>
+        <ellipse cx="160" cy="86" rx="89" ry="24" fill="url(#can-lid)" stroke="#555958"/>
+        <ellipse cx="160" cy="86" rx="81" ry="20" fill="none" stroke="#e5e9e7" strokeOpacity=".65"/>
+        <ellipse cx="160" cy="89" rx="45" ry="18" fill="#1b1b1b" stroke="#747a77" strokeWidth="2"/>
+        <g clipPath="url(#can-opening)">
+          <rect className="resume-can__shutter" x="113" y="69" width="94" height="40" rx="18" fill="url(#can-metal)" stroke="#c9d3c1"/>
         </g>
+        <g className="resume-can__ticket">
+          <path d="M140 94V55H180V94" fill="#fff" stroke="#bbb"/>
+          <path d="M147 64H173M147 70H173M147 76H167" stroke="#222" strokeWidth="2"/>
+          <path d="M147 82H159" stroke="#f26403" strokeWidth="3"/>
+        </g>
+        <g className="resume-can__tab" onAnimationEnd={(event) => { if (event.target === event.currentTarget) onCanMotionEnd(); }}>
+          <path d="M148 77Q138 67 140 56Q142 46 160 46Q178 46 180 56Q182 67 172 77Z" fill="url(#can-metal)" stroke="#656b68" strokeWidth="2"/>
+          <ellipse cx="160" cy="59" rx="11" ry="7" fill="#292929" stroke="#e5e9e6" strokeWidth="1.5"/>
+          <path d="M150 71H170" stroke="#5b625f" strokeWidth="2"/>
+        </g>
+        <ellipse cx="160" cy="77" rx="5" ry="3" fill="#dce2df" stroke="#707875"/>
+        <path d="M66 86Q160 117 254 86" fill="none" stroke="#f2f5f3" strokeOpacity=".8" strokeWidth="2"/>
       </svg>
-      <span className="resume-bottle__cta">{isResumeActive ? "The essentials, opened" : "Twist open my resume ↗"}</span>
+      <span className="resume-can__cta">{isResumeActive ? "Resume, on tap ↗" : "Pop open my resume ↗"}</span>
     </button>
   );
 }
@@ -473,7 +457,7 @@ function ArtifactMediaFrame({ artifactLabel, media }: ArtifactMediaFrameProps) {
     return () => { observer.disconnect(); video.pause(); };
   }, []);
   const frameClassName =
-    "relative block h-40 overflow-hidden border-2 border-[var(--ritual-accent)] bg-white";
+    "relative block h-40 overflow-hidden border-2 border-[var(--mac-accent)] bg-white";
   const content =
     media.type === "image" ? (
       <Image
@@ -541,6 +525,7 @@ export default function Home() {
     useState<CanArrowGeometry | null>(null);
   const canPromptTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const cardSlideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const previousResumeModeRef = useRef<ResumeMode>("closed");
   const topSectionRef = useRef<HTMLElement | null>(null);
   const canPromptButtonRef = useRef<HTMLButtonElement | null>(null);
   const currentCard = whyCards[cardIndex];
@@ -558,11 +543,26 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
+    if (resumeMode !== "opening" && resumeMode !== "closing") return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const timer = window.setTimeout(() => {
+      setResumeMode((mode) => mode === "opening" ? "open" : mode === "closing" ? "closed" : mode);
+    }, reduced ? 0 : 1250);
+    return () => window.clearTimeout(timer);
+  }, [resumeMode]);
+
+  useEffect(() => {
+    if (isResumeVisible) document.querySelector<HTMLAnchorElement>(".resume-download")?.focus({ preventScroll: true });
+    if (resumeMode === "closed" && previousResumeModeRef.current === "closing") document.querySelector<HTMLButtonElement>(".resume-can")?.focus({ preventScroll: true });
+    previousResumeModeRef.current = resumeMode;
+  }, [isResumeVisible, resumeMode]);
+
+  useEffect(() => {
     if (!isResumeVisible) return;
     const closeWithEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setResumeMode("closing");
-        document.querySelector<HTMLButtonElement>(".resume-bottle")?.focus({ preventScroll: true });
+        document.querySelector<HTMLButtonElement>(".resume-can")?.focus({ preventScroll: true });
       }
     };
     window.addEventListener("keydown", closeWithEscape);
@@ -577,7 +577,7 @@ export default function Home() {
 
     const topSection = topSectionRef.current;
     const promptButton = canPromptButtonRef.current;
-    const can = topSection?.querySelector(".resume-bottle");
+    const can = topSection?.querySelector(".resume-can");
 
     if (!topSection || !promptButton || !(can instanceof HTMLElement)) {
       return;
@@ -690,7 +690,7 @@ export default function Home() {
     setResumeMode(resumeMode === "minimized" ? "open" : "opening");
   }
 
-  function finishCapMotion() {
+  function finishCanMotion() {
     setResumeMode((mode) => mode === "opening" ? "open" : mode === "closing" ? "closed" : mode);
   }
 
@@ -702,7 +702,7 @@ export default function Home() {
     }
 
     window.scrollTo({
-      behavior: "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
       top: workSection.getBoundingClientRect().top + window.scrollY - 88,
     });
   }
@@ -715,7 +715,7 @@ export default function Home() {
     }
 
     window.scrollTo({
-      behavior: "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
       top: topSection.offsetTop,
     });
 
@@ -727,19 +727,20 @@ export default function Home() {
 
       <nav
         aria-label="Main sections"
-        className="site-nav sticky top-0 z-50 border-b-4 border-[var(--ritual-navy)] bg-white/90 px-4 py-3 shadow-[0_6px_0_var(--ritual-accent)] backdrop-blur sm:px-6"
+        className="site-nav sticky top-0 z-50 border-b-4 border-[var(--mac-black)] bg-white/90 px-4 py-3 shadow-[0_6px_0_var(--mac-accent)] backdrop-blur sm:px-6"
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
           <a
-            className="font-mono text-xs font-black uppercase tracking-[0.22em] text-[var(--ritual-navy)]"
+            className="font-mono text-xs font-black uppercase tracking-[0.22em] text-[var(--mac-black)]"
             href="#top"
           >
-            Miles Mattina / Ritual
+            <span>Miles Mattina</span><span className="nav-slash" aria-hidden="true">/</span>
+            <Image className="nav-brand" src="/brand/mac-logo.png" alt="MAC Energy" width={100} height={33} unoptimized priority />
           </a>
           <div className="flex flex-wrap justify-end gap-2">
             {navItems.map(([label, href]) => (
               <a
-                className="border-2 border-[var(--ritual-navy)] bg-white px-3 py-1.5 text-xs font-black uppercase text-[var(--ritual-navy)] shadow-[3px_3px_0_var(--ritual-accent)] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--ritual-accent)]"
+                className="border-2 border-[var(--mac-black)] bg-white px-3 py-1.5 text-xs font-black uppercase text-[var(--mac-black)] shadow-[3px_3px_0_var(--mac-accent)] transition hover:-translate-y-0.5 hover:shadow-[5px_5px_0_var(--mac-accent)]"
                 href={href}
                 key={href}
               >
@@ -751,19 +752,19 @@ export default function Home() {
       </nav>
 
       <section
-        className="ritual-hero relative mx-auto grid min-h-[calc(100vh-64px)] max-w-7xl items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:py-16"
+        className="mac-hero relative mx-auto grid min-h-[calc(100vh-64px)] max-w-7xl items-center gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:py-16"
         id="top"
         ref={topSectionRef}
       >
         <div className="hero-copy relative z-10">
-          <p className="mb-5 inline-flex -rotate-2 border-2 border-[var(--ritual-navy)] bg-[var(--ritual-yellow)] px-3 py-1 text-xs font-black uppercase tracking-[0.24em] text-[var(--ritual-navy)] shadow-[5px_5px_0_var(--ritual-accent)]">
+          <p className="mb-5 inline-flex -rotate-2 border-2 border-[var(--mac-black)] bg-[var(--mac-orange)] px-3 py-1 text-xs font-black uppercase tracking-[0.24em] text-[var(--mac-black)] shadow-[5px_5px_0_var(--mac-accent)]">
             Brand Manager application
           </p>
-          <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.84] text-[var(--ritual-navy)] sm:text-7xl lg:text-8xl">
+          <h1 className="max-w-3xl text-6xl font-black uppercase leading-[0.84] text-[var(--mac-black)] sm:text-7xl lg:text-8xl">
             Who is this guy?
           </h1>
           <p className="mt-7 max-w-2xl text-xl font-semibold leading-8 sm:text-2xl">
-            A custom hello from Miles Mattina, built for Ritual with
+            A custom hello from Miles Mattina, built for MAC Energy with
             a little brand-building experience, a lot of creative follow-through,
             and a very earnest interest in the job.
           </p>
@@ -777,15 +778,15 @@ export default function Home() {
               type="button"
             >
                 {canPromptLevel === 0
-                  ? "Click the bottle"
+                  ? "Click the can"
                   : canPromptLevel === 1
-                    ? "no, click the bottle"
-                    : "THE BOTTLE"}
+                    ? "no, click the can"
+                    : "THE CAN"}
             </button>
             {canPromptLevel === 1 ? (
               <span
                 aria-hidden="true"
-                className="pointer-events-none text-4xl font-black text-[var(--ritual-accent)] sm:text-5xl"
+                className="pointer-events-none text-4xl font-black text-[var(--mac-accent)] sm:text-5xl"
               >
                 →
               </span>
@@ -823,15 +824,15 @@ export default function Home() {
         ) : null}
 
         <div
-          aria-label="Interactive Miles Mattina resume bottle"
-          className="bottle-stage relative min-h-[560px]"
+          aria-label="Interactive Miles Mattina resume can"
+          className="can-stage relative min-h-[560px]"
         >
-          <ResumeBottle
+          <ResumeCan
             isResumeActive={isResumeActive}
             isPrompting={isCanPrompting}
             openResume={openResume}
             resumeMode={resumeMode}
-            onCapMotionEnd={finishCapMotion}
+            onCanMotionEnd={finishCanMotion}
           />
         </div>
       </section>
@@ -841,15 +842,15 @@ export default function Home() {
         id="why-me"
       >
         <div>
-          <p className="font-mono text-xs font-black uppercase tracking-[0.26em] text-[var(--ritual-accent)]">
+          <p className="font-mono text-xs font-black uppercase tracking-[0.26em] text-[var(--mac-accent)]">
             pull cards
           </p>
-          <h2 className="mt-2 text-5xl font-black uppercase leading-none text-[var(--ritual-navy)] sm:text-6xl">
+          <h2 className="mt-2 text-5xl font-black uppercase leading-none text-[var(--mac-black)] sm:text-6xl">
             Why me?
           </h2>
           {cardIndex > 0 || isWhyStackComplete ? (
             <button
-              className="mt-6 border-2 border-[var(--ritual-navy)] bg-white px-4 py-2 text-xs font-black uppercase text-[var(--ritual-navy)] shadow-[4px_4px_0_var(--ritual-accent)]"
+              className="mt-6 border-2 border-[var(--mac-black)] bg-white px-4 py-2 text-xs font-black uppercase text-[var(--mac-black)] shadow-[4px_4px_0_var(--mac-accent)]"
               onClick={resetCards}
               type="button"
             >
@@ -862,12 +863,12 @@ export default function Home() {
           className="relative min-h-[470px]"
         >
           {isWhyStackComplete ? (
-            <div className="absolute inset-x-0 top-0 mx-auto flex h-80 w-[calc(100%-1.25rem)] max-w-xl flex-col justify-center gap-8 border-4 border-[var(--ritual-navy)] bg-[var(--ritual-yellow)] p-8 text-[var(--ritual-navy)] shadow-[10px_10px_0_var(--ritual-accent)] sm:w-full sm:shadow-[14px_14px_0_var(--ritual-accent)]">
+            <div className="absolute inset-x-0 top-0 mx-auto flex h-80 w-[calc(100%-1.25rem)] max-w-xl flex-col justify-center gap-8 border-4 border-[var(--mac-black)] bg-[var(--mac-orange)] p-8 text-[var(--mac-black)] shadow-[10px_10px_0_var(--mac-accent)] sm:w-full sm:shadow-[14px_14px_0_var(--mac-accent)]">
               <h3 className="text-5xl font-black uppercase leading-[0.88] sm:text-6xl">
                 THEN LET ME PROVE IT.
               </h3>
               <button
-                className="self-start border-2 border-[var(--ritual-navy)] bg-white px-5 py-3 text-sm font-black uppercase text-[var(--ritual-navy)] shadow-[5px_5px_0_var(--ritual-accent)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--ritual-accent)]"
+                className="self-start border-2 border-[var(--mac-black)] bg-white px-5 py-3 text-sm font-black uppercase text-[var(--mac-black)] shadow-[5px_5px_0_var(--mac-accent)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--mac-accent)]"
                 onClick={scrollToWork}
                 type="button"
               >
@@ -880,7 +881,7 @@ export default function Home() {
                 .slice(cardIndex + 1, cardIndex + 4)
                 .map((card, offset) => (
                   <div
-                    className={`pointer-events-none absolute inset-x-0 mx-auto w-[calc(100%-1.25rem)] max-w-xl border-4 border-[var(--ritual-navy)] bg-white shadow-[8px_8px_0_rgba(21,63,143,0.2)] sm:w-full sm:shadow-[10px_10px_0_rgba(21,63,143,0.2)] h-80`}
+                    className={`pointer-events-none absolute inset-x-0 mx-auto w-[calc(100%-1.25rem)] max-w-xl border-4 border-[var(--mac-black)] bg-white shadow-[8px_8px_0_rgba(0,0,0,0.1)] sm:w-full sm:shadow-[10px_10px_0_rgba(0,0,0,0.1)] h-80`}
                     key={card.title}
                     style={{
                       top: `${24 + offset * 16}px`,
@@ -893,15 +894,15 @@ export default function Home() {
                 ))}
               <div
                 aria-live="polite"
-                className={`why-card ${isBridgeCard ? "why-card--bridge" : isSincereCard ? "why-card--sincere" : ""} absolute inset-x-0 top-0 z-10 mx-auto flex w-[calc(100%-1.25rem)] max-w-xl border-4 border-[var(--ritual-navy)] text-left shadow-[10px_10px_0_var(--ritual-accent)] transition hover:-translate-y-1 sm:w-full sm:shadow-[14px_14px_0_var(--ritual-accent)] h-80 ${
+                className={`why-card ${isBridgeCard ? "why-card--bridge" : isSincereCard ? "why-card--sincere" : ""} absolute inset-x-0 top-0 z-10 mx-auto flex w-[calc(100%-1.25rem)] max-w-xl border-4 border-[var(--mac-black)] text-left shadow-[10px_10px_0_var(--mac-accent)] transition hover:-translate-y-1 sm:w-full sm:shadow-[14px_14px_0_var(--mac-accent)] h-80 ${
                   cardSlideDirection === "next" ? "why-card--exit-next" : ""
                 } ${
                   cardSlideDirection === "prev" ? "why-card--exit-prev" : ""
                 } ${
                   isSincereCard
-                    ? "flex-col justify-center gap-7 bg-[var(--ritual-navy)] p-9 text-white sm:p-10"
+                    ? "flex-col justify-center gap-7 bg-[var(--mac-black)] p-9 text-white sm:p-10"
                     : isBridgeCard
-                      ? "items-center justify-center bg-[var(--ritual-yellow)] p-9 text-center text-[var(--ritual-navy)] sm:p-10"
+                      ? "items-center justify-center bg-[var(--mac-orange)] p-9 text-center text-[var(--mac-black)] sm:p-10"
                       : "flex-col justify-between bg-white p-6 text-[var(--ink)] sm:p-7"
                 }`}
               >
@@ -939,7 +940,7 @@ export default function Home() {
               >
                 <button
                   aria-label="Previous reason"
-                  className="grid size-12 place-items-center border-2 border-[var(--ritual-navy)] bg-white text-3xl font-black leading-none text-[var(--ritual-navy)] shadow-[4px_4px_0_var(--ritual-accent)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
+                  className="grid size-12 place-items-center border-2 border-[var(--mac-black)] bg-white text-3xl font-black leading-none text-[var(--mac-black)] shadow-[4px_4px_0_var(--mac-accent)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:translate-y-0"
                   disabled={cardIndex === 0 || isCardSliding}
                   onClick={() => moveCard("prev")}
                   type="button"
@@ -948,7 +949,7 @@ export default function Home() {
                 </button>
                 <button
                   aria-label="Next reason"
-                  className="grid size-12 place-items-center border-2 border-[var(--ritual-navy)] bg-[var(--ritual-navy)] text-3xl font-black leading-none text-white shadow-[4px_4px_0_var(--ritual-accent)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="grid size-12 place-items-center border-2 border-[var(--mac-black)] bg-[var(--mac-black)] text-3xl font-black leading-none text-white shadow-[4px_4px_0_var(--mac-accent)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                   disabled={isCardSliding}
                   onClick={advanceCard}
                   type="button"
@@ -966,10 +967,10 @@ export default function Home() {
         id="field-notes"
       >
         <div className="max-w-3xl">
-          <p className="font-mono text-xs font-black uppercase tracking-[0.26em] text-[var(--ritual-accent)]">
+          <p className="font-mono text-xs font-black uppercase tracking-[0.26em] text-[var(--mac-accent)]">
             The receipts
           </p>
-          <h2 className="mt-2 text-5xl font-black uppercase leading-none text-[var(--ritual-navy)] sm:text-6xl">
+          <h2 className="mt-2 text-5xl font-black uppercase leading-none text-[var(--mac-black)] sm:text-6xl">
             Here&apos;s what I&apos;ve been up to.
           </h2>
           <p className="mt-5 text-lg font-semibold leading-7">
@@ -986,7 +987,7 @@ export default function Home() {
               key={note.title}
             >
               <div
-                className={`project-intro relative border-4 border-white p-6 outline outline-4 outline-[var(--ritual-navy)] ${
+                className={`project-intro relative border-4 border-white p-6 outline outline-4 outline-[var(--mac-black)] ${
                   note.title === "Buoy Bird" || note.title === "South of Sober"
                     ? "overflow-hidden pr-28 sm:pr-36"
                     : ""
@@ -1003,7 +1004,7 @@ export default function Home() {
                 </p>
                 {note.title === "Buoy Bird" ? (
                   <a
-                    className="mt-7 block border-4 border-white bg-[var(--ritual-accent)] p-5 text-white shadow-[8px_8px_0_rgba(0,0,0,0.36)] transition hover:-translate-y-0.5"
+                    className="mt-7 block border-4 border-white bg-[var(--mac-accent)] p-5 text-white shadow-[8px_8px_0_rgba(0,0,0,0.36)] transition hover:-translate-y-0.5"
                     href="https://www.instagram.com/buoybirdofficial/"
                     rel="noreferrer"
                     target="_blank"
@@ -1014,7 +1015,7 @@ export default function Home() {
                     <span className="mt-3 block text-3xl font-black uppercase leading-[0.9]">
                       Watch the pinned Cinema by the Shore preview videos.
                     </span>
-                    <span className="mt-4 inline-block border-2 border-white bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--ritual-navy)] shadow-[4px_4px_0_rgba(0,0,0,0.28)]">
+                    <span className="mt-4 inline-block border-2 border-white bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.14em] text-[var(--mac-black)] shadow-[4px_4px_0_rgba(0,0,0,0.28)]">
                       @buoybirdofficial on Instagram
                     </span>
                   </a>
@@ -1022,7 +1023,7 @@ export default function Home() {
                 <div className="mt-7 flex flex-wrap gap-3">
                   {note.links.map((link) => (
                     <a
-                      className="border-2 border-white bg-white px-4 py-2 text-xs font-black uppercase text-[var(--ritual-navy)] shadow-[4px_4px_0_rgba(0,0,0,0.3)] transition hover:-translate-y-0.5"
+                      className="border-2 border-white bg-white px-4 py-2 text-xs font-black uppercase text-[var(--mac-black)] shadow-[4px_4px_0_rgba(0,0,0,0.3)] transition hover:-translate-y-0.5"
                       href={link.href}
                       key={link.href}
                       rel="noreferrer"
@@ -1083,7 +1084,7 @@ export default function Home() {
 
                   return (
                     <div
-                      className={`artifact-card min-h-56 border-4 border-[var(--ritual-navy)] bg-white p-3 shadow-[8px_8px_0_rgba(196,32,50,0.25)] ${
+                      className={`artifact-card min-h-56 border-4 border-[var(--mac-black)] bg-white p-3 shadow-[8px_8px_0_rgba(0,0,0,0.1)] ${
                         (artifactIndex + index) % 2 === 0
                           ? "-rotate-1"
                           : "rotate-1"
@@ -1096,13 +1097,13 @@ export default function Home() {
                           media={media}
                         />
                       ) : (
-                        <div className="flex h-40 items-center justify-center border-2 border-dashed border-[var(--ritual-accent)] bg-[linear-gradient(135deg,#fff_0_32%,#eef3ff_32%_50%,#fff_50%_70%,#ffe8e8_70%)] text-center">
-                          <p className="max-w-32 font-mono text-xs font-black uppercase tracking-[0.16em] text-[var(--ritual-navy)]">
+                        <div className="flex h-40 items-center justify-center border-2 border-dashed border-[var(--mac-accent)] bg-[linear-gradient(135deg,#fff_0_32%,#eeeeeb_32%_50%,#fff_50%_70%,#f5e8df_70%)] text-center">
+                          <p className="max-w-32 font-mono text-xs font-black uppercase tracking-[0.16em] text-[var(--mac-black)]">
                             {artifact.label}
                           </p>
                         </div>
                       )}
-                      <p className="mt-3 text-sm font-black uppercase text-[var(--ritual-accent)]">
+                      <p className="mt-3 text-sm font-black uppercase text-[var(--mac-accent)]">
                         {artifact.label}
                       </p>
                       <p className="mt-2 text-sm font-bold leading-5 text-[var(--ink)]">
@@ -1121,24 +1122,24 @@ export default function Home() {
         className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:py-24"
         id="talk"
       >
-        <div className="talk-card max-w-4xl border-4 border-[var(--ritual-navy)] bg-white p-7 shadow-[14px_14px_0_var(--ritual-accent)] sm:p-10">
-          <p className="font-mono text-xs font-black uppercase tracking-[0.26em] text-[var(--ritual-accent)]">
+        <div className="talk-card max-w-4xl border-4 border-[var(--mac-black)] bg-white p-7 shadow-[14px_14px_0_var(--mac-accent)] sm:p-10">
+          <p className="font-mono text-xs font-black uppercase tracking-[0.26em] text-[var(--mac-accent)]">
             closing tab
           </p>
-          <h2 className="mt-6 text-6xl font-black uppercase leading-[0.86] text-[var(--ritual-navy)] sm:text-7xl">
+          <h2 className="mt-6 text-6xl font-black uppercase leading-[0.86] text-[var(--mac-black)] sm:text-7xl">
             We should probably talk.
           </h2>
           <p className="mt-6 max-w-2xl text-xl font-semibold leading-8">
             If you want the official version, it&apos;s still hiding up top in
-            the bottle.
+            the can.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <button
-              className="border-2 border-[var(--ritual-navy)] bg-[var(--ritual-yellow)] px-5 py-3 text-sm font-black uppercase text-[var(--ritual-navy)] shadow-[5px_5px_0_var(--ritual-accent)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--ritual-accent)]"
+              className="border-2 border-[var(--mac-black)] bg-[var(--mac-orange)] px-5 py-3 text-sm font-black uppercase text-[var(--mac-black)] shadow-[5px_5px_0_var(--mac-accent)] transition hover:-translate-y-0.5 hover:shadow-[7px_7px_0_var(--mac-accent)]"
               onClick={scrollToCan}
               type="button"
             >
-              Back to the bottle
+              Back to the can
             </button>
             <a className="contact-link" href="mailto:milesmattina@gmail.com">Email Miles ↗</a>
             <a className="contact-link" href="https://www.linkedin.com/in/milesmattina" target="_blank" rel="noreferrer">LinkedIn ↗</a>
@@ -1146,11 +1147,11 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="portfolio-footer">Miles Mattina · An independent application for Ritual.</footer>
+      <footer className="portfolio-footer">Miles Mattina · An independent application for MAC Energy.</footer>
 
       {resumeMode === "minimized" ? (
         <button
-          className="fixed bottom-4 right-4 z-[70] border-4 border-[var(--ritual-navy)] bg-[var(--ritual-yellow)] px-5 py-4 text-left text-sm font-black uppercase text-[var(--ritual-navy)] shadow-[8px_8px_0_var(--ritual-accent)] transition hover:-translate-y-1"
+          className="fixed bottom-4 right-4 z-[70] border-4 border-[var(--mac-black)] bg-[var(--mac-orange)] px-5 py-4 text-left text-sm font-black uppercase text-[var(--mac-black)] shadow-[8px_8px_0_var(--mac-accent)] transition hover:-translate-y-1"
           onClick={openResume}
           type="button"
         >
@@ -1161,17 +1162,19 @@ export default function Home() {
 
       {isResumeVisible ? (
         <aside
+          id="resume-viewer"
+          data-mode={resumeMode}
           aria-label="Miles Mattina resume viewer"
-          className={`fixed z-[80] flex flex-col border-4 border-[var(--ritual-navy)] bg-white shadow-[18px_18px_0_var(--ritual-accent)] transition-all duration-500 ${
+          className={`fixed z-[80] flex flex-col border-4 border-[var(--mac-black)] bg-white shadow-[18px_18px_0_var(--mac-accent)] transition-all duration-500 ${
             resumeMode === "full"
               ? "inset-3 sm:inset-5"
               : "bottom-4 right-4 top-20 w-[calc(100vw-2rem)] lg:w-[52vw]"
           }`}
         >
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b-4 border-[var(--ritual-navy)] bg-[var(--ritual-navy)] px-4 py-3 text-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b-4 border-[var(--mac-black)] bg-[var(--mac-black)] px-4 py-3 text-white">
             <div>
-              <p className="font-mono text-[11px] font-black uppercase tracking-[0.22em] text-[var(--ritual-yellow)]">
-                resume bottle contents
+              <p className="font-mono text-[11px] font-black uppercase tracking-[0.22em] text-[var(--mac-orange)]">
+                resume can contents
               </p>
               <h3 className="text-2xl font-black uppercase leading-none">
                 Miles Mattina Resume
@@ -1181,7 +1184,7 @@ export default function Home() {
               <a className="resume-download" href="/Miles_Mattina_Resume.pdf" download>Download PDF</a>
               <button type="button" className="resume-zoom" onClick={() => setIsResumeZoomed((zoomed) => !zoomed)}>{isResumeZoomed ? "Fit page" : "Zoom in"}</button>
               <button
-                className="border-2 border-white bg-white px-3 py-2 text-xs font-black uppercase text-[var(--ritual-navy)] shadow-[3px_3px_0_var(--ritual-accent)]"
+                className="border-2 border-white bg-white px-3 py-2 text-xs font-black uppercase text-[var(--mac-black)] shadow-[3px_3px_0_var(--mac-accent)]"
                 onClick={() =>
                   setResumeMode((mode) => (mode === "full" ? "open" : "full"))
                 }
@@ -1190,14 +1193,14 @@ export default function Home() {
                 {resumeMode === "full" ? "Half screen" : "Full screen"}
               </button>
               <button
-                className="border-2 border-white bg-[var(--ritual-yellow)] px-3 py-2 text-xs font-black uppercase text-[var(--ritual-navy)] shadow-[3px_3px_0_var(--ritual-accent)]"
+                className="border-2 border-white bg-[var(--mac-orange)] px-3 py-2 text-xs font-black uppercase text-[var(--mac-black)] shadow-[3px_3px_0_var(--mac-accent)]"
                 onClick={() => setResumeMode("minimized")}
                 type="button"
               >
                 Minimize
               </button>
               <button
-                className="border-2 border-white bg-[var(--ritual-accent)] px-3 py-2 text-xs font-black uppercase text-white shadow-[3px_3px_0_var(--ritual-yellow)]"
+                className="border-2 border-white bg-[var(--mac-accent)] px-3 py-2 text-xs font-black uppercase text-white shadow-[3px_3px_0_var(--mac-orange)]"
                 onClick={() => setResumeMode("closing")}
                 type="button"
               >
